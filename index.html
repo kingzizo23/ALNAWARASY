@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ALNAWARA | إزالة الكروما وتصدير GIF شفاف</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- الشريط العلوي -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <h1>ALNAWARA</h1>
+      <span class="badge">PRO</span>
+    </div>
+    <div id="fileInfo" class="file-info hidden">
+      <span id="fileName" class="file-name"></span>
+    </div>
+    <div class="topbar-actions">
+      <button id="exportBtn" class="btn-primary" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>تصدير GIF شفاف</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- مساحة العمل الرئيسية -->
+  <main class="workspace">
+    <!-- منطقة المعاينة والشاشة -->
+    <section class="preview-pane">
+      <div id="dropZone" class="drop-zone">
+        <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" hidden />
+        
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 10l5-3v10l-5-3"></path>
+              <rect x="2" y="5" width="13" height="14" rx="2"></rect>
+            </svg>
+          </div>
+          <p class="empty-title">اسحب الفيديو هنا أو اضغط للاختيار</p>
+          <p class="empty-sub">يدعم MP4 و WebM و MOV — يفضل مقاطع أقل من 15 ثانية للحصول على أفضل أداء</p>
+          <button id="pickFileBtn" class="btn-secondary" type="button">اختيار فيديو من الجهاز</button>
+        </div>
+
+        <div id="canvasWrap" class="canvas-wrap hidden">
+          <canvas id="glCanvas"></canvas>
+          <video id="sourceVideo" playsinline muted loop crossorigin="anonymous" hidden></video>
+          <div id="eyedropperTip" class="eyedropper-tip hidden">
+            <span>انقر على لون الكروما داخل الفيديو للالتقاط</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- شريط التحكم في التشغيل -->
+      <div id="playbackBar" class="playback-bar hidden">
+        <button id="playPauseBtn" class="btn-icon" type="button" title="تشغيل / إيقاف">
+          <span id="playIcon">⏸</span>
+        </button>
+        <input id="seekSlider" type="range" min="0" max="100" value="0" step="0.1" />
+        <span id="timeLabel" class="time-label">00:00 / 00:00</span>
+      </div>
+    </section>
+
+    <!-- لوحة التحكم الجانبية -->
+    <aside class="controls-pane">
+      <!-- تبويبات الهاتف -->
+      <nav class="mobile-tabs">
+        <button class="tab-btn active" data-tab="chroma">الكروما</button>
+        <button class="tab-btn" data-tab="trim">القص</button>
+        <button class="tab-btn" data-tab="export">التصدير</button>
+      </nav>
+
+      <!-- تبويب 1: الكروما والعزل -->
+      <div class="tab-panel active" id="tab-chroma">
+        <div class="panel-header">
+          <h2>إعدادات العزل (Chroma Key)</h2>
+          <p class="panel-desc">عزل دقيق في فضاء YCbCr اللوني</p>
+        </div>
+
+        <div class="control-group">
+          <label>لون الكروما المستهدف</label>
+          <div class="color-row">
+            <input type="color" id="keyColor" value="#00ff00" title="اختر اللون يدوياً" />
+            <button class="chip-btn active" data-color="#00ff00" type="button">أخضر</button>
+            <button class="chip-btn" data-color="#0044ff" type="button">أزرق</button>
+            <button id="eyedropperBtn" class="chip-btn chip-action" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2l4 4L7 17H3v-4L14 2z"></path>
+                <path d="M3 21h18"></path>
+              </svg>
+              <span>قطارة من الفيديو</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="label-row">
+            <label for="similarity">حساسية العزل (Similarity)</label>
+            <span id="similarityVal" class="value-tag">0.35</span>
+          </div>
+          <input id="similarity" type="range" min="0.05" max="0.75" step="0.01" value="0.35" />
+          <span class="field-hint">كلما زادت القيمة زاد نطاق الألوان المعزولة</span>
+        </div>
+
+        <div class="control-group">
+          <div class="label-row">
+            <label for="smoothness">نعومة الحواف (Smoothness)</label>
+            <span id="smoothnessVal" class="value-tag">0.10</span>
+          </div>
+          <input id="smoothness" type="range" min="0.01" max="0.40" step="0.01" value="0.10" />
+          <span class="field-hint">تنعيم حواف المجسم وتقليل التعرج</span>
+        </div>
+
+        <div class="control-group">
+          <div class="label-row">
+            <label for="spill">إزالة الانعكاس الأخضر (Spill)</label>
+            <span id="spillVal" class="value-tag">0.20</span>
+          </div>
+          <input id="spill" type="range" min="0.00" max="1.00" step="0.02" value="0.20" />
+          <span class="field-hint">إزالة هالة اللون المنعكسة على الشعر والأطراف</span>
+        </div>
+      </div>
+
+      <!-- تبويب 2: القص وتحديد المقطع -->
+      <div class="tab-panel" id="tab-trim">
+        <div class="panel-header">
+          <h2>قص المقطع (Trim Video)</h2>
+          <p class="panel-desc">حدد الجزء المراد تحويله إلى GIF</p>
+        </div>
+
+        <div class="control-group">
+          <label for="trimStart">بداية المقطع (ثوانٍ)</label>
+          <input id="trimStart" type="number" min="0" step="0.1" value="0" />
+        </div>
+
+        <div class="control-group">
+          <label for="trimEnd">نهاية المقطع (ثوانٍ)</label>
+          <input id="trimEnd" type="number" min="0.5" step="0.1" value="5" />
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-row">
+            <span>مدة المقطع المحدد:</span>
+            <strong id="selectedDuration">0.0 ثانية</strong>
+          </div>
+          <div class="stat-row">
+            <span>إجمالي الإطارات المتوقعة:</span>
+            <strong id="estimatedFrames">0 إطار</strong>
+          </div>
+        </div>
+
+        <div id="memoryWarning" class="warning-banner hidden">
+          ⚠️ تنبيه: تجاوزت مدة المقطع 15 ثانية، قد يتطلب التصدير وقتاً أطول واستهلاكاً كبيراً لذاكرة الجهاز.
+        </div>
+
+        <button id="changeVideoBtn" class="btn-secondary full-w" type="button">
+          🔄 تغيير الفيديو الحالي
+        </button>
+      </div>
+
+      <!-- تبويب 3: التصدير والإعدادات -->
+      <div class="tab-panel" id="tab-export">
+        <div class="panel-header">
+          <h2>إعدادات التصدير</h2>
+          <p class="panel-desc">توليد ملف GIF شفاف متوافق مع المراسلات والويب</p>
+        </div>
+
+        <div class="control-group">
+          <label for="exportWidth">عرض الـ GIF (العرض بكسل)</label>
+          <select id="exportWidth">
+            <option value="320">320 بكسل (حجم خفيف جداً للهاتف)</option>
+            <option value="480" selected>480 بكسل (متوازن وموصى به)</option>
+            <option value="720">720 بكسل (جودة عالية HD)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="exportFps">معدل الإطارات (FPS)</label>
+          <select id="exportFps">
+            <option value="12">12 إطار/ثانية (حجم أصغر، تحميل أسرع)</option>
+            <option value="15" selected>15 إطار/ثانية (سلس ومتوازن)</option>
+            <option value="24">24 إطار/ثانية (حركة فائقة النعومة)</option>
+          </select>
+        </div>
+
+        <!-- تنبيه دقة الهاتف -->
+        <div id="mobileResWarning" class="warning-banner hidden">
+          📱 نصيحة: للأجهزة المحمولة يفضل اختيار 480 بكسل أو أقل لسرعة التصدير وتجنب نفاد الذاكرة.
+        </div>
+
+        <!-- زر التصدير الإضافي للهاتف -->
+        <button id="mobileExportBtn" class="btn-primary full-w mobile-only-btn" disabled>
+          تصدير وتحميل GIF شفاف
+        </button>
+
+        <!-- مؤشر تقدم التصدير -->
+        <div id="exportProgressWrap" class="progress-wrap hidden">
+          <div class="progress-bar">
+            <div id="exportProgressFill" class="progress-fill"></div>
+          </div>
+          <div class="progress-meta">
+            <span id="exportStatus">جاري تجهيز الإطارات...</span>
+            <span id="exportPct">0%</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
