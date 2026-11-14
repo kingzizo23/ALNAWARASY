@@ -511,6 +511,60 @@ input[type="color"]::-webkit-color-swatch {
   color: var(--text);
 }
 
+.limit-value {
+  color: #38bdf8 !important;
+}
+
+.size-status-safe {
+  color: #10b981 !important;
+}
+
+.size-status-warning {
+  color: #f59e0b !important;
+}
+
+/* بطاقة الحد الأقصى لحجم التصدير */
+.size-limit-card {
+  background: rgba(49, 134, 255, 0.06);
+  border: 1px solid rgba(49, 134, 255, 0.28);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.size-limit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.size-limit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.size-limit-value {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.size-limit-desc {
+  font-size: 0.77rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .warning-banner {
   background: var(--warning-bg);
   border: 1px solid var(--warning-border);

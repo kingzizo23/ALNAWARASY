@@ -48,6 +48,27 @@ const exportFpsSelect = document.getElementById('exportFps');
 const mobileResWarning = document.getElementById('mobileResWarning');
 const fileInfo = document.getElementById('fileInfo');
 const fileNameEl = document.getElementById('fileName');
+const trimEstimatedSize = document.getElementById('trimEstimatedSize');
+const exportEstimatedSize = document.getElementById('exportEstimatedSize');
+
+// سقف حجم التصدير الصارم: 2.800 ميجابايت (2,800 كيلوبايت)
+const MAX_BYTES_LIMIT = 2800 * 1024; // 2,867,200 بايت (2,800 KB / 2.800 MB)
+const SAFE_BYTES_TARGET = 2750 * 1024; // 2,816,000 بايت كهدف أمان ملائم
+
+function formatBytes(bytes) {
+  if (!bytes || isNaN(bytes)) return '0 B';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
+function estimateGifBytes(width, height, fps, duration) {
+  const frames = Math.max(1, Math.round(duration * fps));
+  // تقدير واقعي لكروما الشفافة بعد ضغط LZW وجدول ألوان 256
+  const bytesPerPixel = 0.145;
+  const est = Math.round(width * height * bytesPerPixel * frames) + 2048;
+  return est;
+}
 
 // تهيئة محرك WebGL2
 let engine;
@@ -290,7 +311,7 @@ glCanvas.addEventListener('click', (e) => {
   toggleEyedropper(false);
 });
 
-// 7. إدارة القص وحساب الإحصائيات وتحذيرات الذاكرة
+// 7. إدارة القص وحساب الإحصائيات وتحذيرات الذاكرة والحجم
 function updateTrimStats() {
   const start = Math.max(0, parseFloat(trimStartInput.value) || 0);
   const maxDur = video.duration || 60;
@@ -302,16 +323,35 @@ function updateTrimStats() {
   const dur = Math.max(0.1, end - start);
   const fps = parseInt(exportFpsSelect.value, 10);
   const frames = Math.round(dur * fps);
+  const widthVal = parseInt(exportWidthSelect.value, 10);
+  const aspect = (video.videoWidth && video.videoHeight) ? (video.videoHeight / video.videoWidth) : 1;
+  const heightVal = Math.round(widthVal * aspect);
 
   selectedDurationEl.textContent = `${dur.toFixed(1)} ثانية`;
   estimatedFramesEl.textContent = `${frames} إطار`;
+
+  // حساب الحجم التقديري وتحديث المؤشرات
+  const estBytes = estimateGifBytes(widthVal, heightVal, fps, dur);
+  const estFormatted = formatBytes(estBytes);
+  const isOverLimit = estBytes > MAX_BYTES_LIMIT;
+
+  const statusClass = isOverLimit ? 'size-status-warning' : 'size-status-safe';
+  const statusSuffix = isOverLimit ? ' ⚠️ (سيتم ضبطه تلقائياً ليكون ≤ 2.800 MB)' : ' (ضمن الحد المسموح ✅)';
+
+  if (trimEstimatedSize) {
+    trimEstimatedSize.className = statusClass;
+    trimEstimatedSize.textContent = `~${estFormatted}${statusSuffix}`;
+  }
+  if (exportEstimatedSize) {
+    exportEstimatedSize.className = statusClass;
+    exportEstimatedSize.textContent = `~${estFormatted}${statusSuffix}`;
+  }
 
   // تحذير الذاكرة إذا زادت المدة عن 15 ثانية
   memoryWarning.classList.toggle('hidden', dur <= 15);
 
   // تحذير دقة الهاتف
   const isMobile = window.innerWidth < 900;
-  const widthVal = parseInt(exportWidthSelect.value, 10);
   mobileResWarning.classList.toggle('hidden', !isMobile || widthVal <= 480);
 }
 
@@ -321,7 +361,65 @@ exportFpsSelect.addEventListener('change', updateTrimStats);
 exportWidthSelect.addEventListener('change', updateTrimStats);
 window.addEventListener('resize', updateTrimStats);
 
-// 8. تصدير ملف GIF الشفاف عبر gifenc
+// رندر وتشفير إطارات الـ GIF لأبعاد ومعدل إطارات محدد
+async function encodeFramesToGif(targetW, targetH, fps, start, end, onProgress) {
+  const totalFrames = Math.max(1, Math.round((end - start) * fps));
+  const delay = Math.round(1000 / fps);
+  const gif = GIFEncoder();
+
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = targetW;
+  offCanvas.height = targetH;
+  const ctx = offCanvas.getContext('2d', { willReadFrequently: true });
+
+  for (let i = 0; i < totalFrames; i++) {
+    const frameTime = start + i / fps;
+
+    // انتقال زمني آمن ودقيق لكل إطار
+    await new Promise((resolve) => {
+      let finished = false;
+      const onSeeked = () => {
+        if (finished) return;
+        finished = true;
+        video.removeEventListener('seeked', onSeeked);
+        resolve();
+      };
+      video.addEventListener('seeked', onSeeked);
+      video.currentTime = frameTime;
+      setTimeout(onSeeked, 400); // مهلة احتياطية للأجهزة البطيئة
+    });
+
+    // رندر الإطار في محرك الكروما
+    engine.render(video, state);
+
+    // رسم الإطار على الكانفاس الثنائي للحصول على بيانات RGBA بالأبعاد المطلوبة
+    ctx.clearRect(0, 0, targetW, targetH);
+    ctx.drawImage(glCanvas, 0, 0, targetW, targetH);
+    const { data } = ctx.getImageData(0, 0, targetW, targetH);
+
+    // تحويل الألوان والشفافية (1-bit alpha شفافية GIF)
+    const palette = quantize(data, 256, { format: 'rgba4444', oneBitAlpha: true });
+    const index = applyPalette(data, palette, 'rgba4444');
+    const transparentIndex = palette.findIndex((c) => c[3] === 0);
+
+    // كتابة الإطار داخل ملف الـ GIF
+    gif.writeFrame(index, targetW, targetH, {
+      palette,
+      delay,
+      transparent: transparentIndex !== -1,
+      transparentIndex: transparentIndex !== -1 ? transparentIndex : 0,
+    });
+
+    if (onProgress) {
+      onProgress(i + 1, totalFrames);
+    }
+  }
+
+  gif.finish();
+  return gif.bytes();
+}
+
+// 8. تصدير ملف GIF الشفاف مع ضمان عدم تجاوز 2.800 ميجابايت (2,800 كيلوبايت)
 async function exportTransparentGif() {
   if (state.exporting || video.readyState < 2) return;
 
@@ -334,74 +432,70 @@ async function exportTransparentGif() {
   exportProgressWrap.classList.remove('hidden');
   exportProgressFill.style.width = '0%';
   exportPct.textContent = '0%';
-  exportStatus.textContent = 'جاري تحضير الإطارات والمعالجة...';
+  exportStatus.textContent = 'جاري تحضير الإطارات والمعالجة (الحد الأقصى: 2.800 MB)...';
 
   const start = state.trimStart;
   const end = state.trimEnd;
-  const fps = parseInt(exportFpsSelect.value, 10);
-  const targetW = parseInt(exportWidthSelect.value, 10);
-  const targetH = Math.round((video.videoHeight / video.videoWidth) * targetW);
+  const duration = Math.max(0.1, end - start);
+  const aspect = (video.videoWidth && video.videoHeight) ? (video.videoHeight / video.videoWidth) : 1;
 
-  // Canvas ثنائي الأبعاد لقراءة بيانات البكسلات
-  const offCanvas = document.createElement('canvas');
-  offCanvas.width = targetW;
-  offCanvas.height = targetH;
-  const ctx = offCanvas.getContext('2d', { willReadFrequently: true });
+  let currentFps = parseInt(exportFpsSelect.value, 10);
+  let currentW = parseInt(exportWidthSelect.value, 10);
 
-  const totalFrames = Math.max(1, Math.round((end - start) * fps));
-  const delay = Math.round(1000 / fps);
-  const gif = GIFEncoder();
+  // موازنة ذكية أولية: إذا كان التقدير يتجاوز 2.800 MB بكثير
+  // نضبط الدقة أو الإطارات للبدء مباشرة بميزانية آمنة
+  let estBytes = estimateGifBytes(currentW, Math.round(currentW * aspect), currentFps, duration);
+  if (estBytes > SAFE_BYTES_TARGET * 1.25) {
+    if (currentFps > 15 && duration > 4) {
+      currentFps = 15;
+      estBytes = estimateGifBytes(currentW, Math.round(currentW * aspect), currentFps, duration);
+    }
+    if (estBytes > SAFE_BYTES_TARGET) {
+      const budgetScale = Math.min(0.95, Math.sqrt((SAFE_BYTES_TARGET * 0.95) / estBytes));
+      currentW = Math.max(220, Math.floor((currentW * budgetScale) / 2) * 2);
+    }
+  }
 
   try {
-    for (let i = 0; i < totalFrames; i++) {
-      const frameTime = start + i / fps;
+    let finalBytes = null;
+    const maxPasses = 3;
 
-      // انتقال زمني آمن ودقيق لكل إطار
-      await new Promise((resolve) => {
-        let finished = false;
-        const onSeeked = () => {
-          if (finished) return;
-          finished = true;
-          video.removeEventListener('seeked', onSeeked);
-          resolve();
-        };
-        video.addEventListener('seeked', onSeeked);
-        video.currentTime = frameTime;
-        setTimeout(onSeeked, 400); // مهلة احتياطية للأجهزة البطيئة
+    for (let pass = 1; pass <= maxPasses; pass++) {
+      const currentH = Math.round(currentW * aspect);
+
+      if (pass > 1) {
+        exportStatus.textContent = `جاري الضبط التلقائي لضمان الحجم (محاولة ${pass}): الدقة ${currentW}px...`;
+        exportProgressFill.style.width = '0%';
+        exportPct.textContent = '0%';
+      }
+
+      finalBytes = await encodeFramesToGif(currentW, currentH, currentFps, start, end, (done, total) => {
+        const pct = Math.round((done / total) * 100);
+        exportProgressFill.style.width = `${pct}%`;
+        exportPct.textContent = `${pct}%`;
+        exportStatus.textContent = pass > 1
+          ? `إعادة التحسين لضبط الحجم: معالجة الإطار ${done} من ${total} (${pct}%)`
+          : `معالجة الإطار ${done} من ${total} (${pct}%)`;
       });
 
-      // رندر الإطار في محرك الكروما
-      engine.render(video, state);
+      // التحقق الصارم من الحجم المطلوب (أقل من أو يساوي 2.800 ميجابايت)
+      if (finalBytes.length <= MAX_BYTES_LIMIT) {
+        break;
+      }
 
-      // رسم الإطار على الكانفاس الثنائي للحصول على بيانات RGBA بالأبعاد المطلوبة
-      ctx.clearRect(0, 0, targetW, targetH);
-      ctx.drawImage(glCanvas, 0, 0, targetW, targetH);
-      const { data } = ctx.getImageData(0, 0, targetW, targetH);
-
-      // تحويل الألوان والشفافية (1-bit alpha شفافية GIF)
-      const palette = quantize(data, 256, { format: 'rgba4444', oneBitAlpha: true });
-      const index = applyPalette(data, palette, 'rgba4444');
-      const transparentIndex = palette.findIndex((c) => c[3] === 0);
-
-      // كتابة الإطار داخل ملف الـ GIF
-      gif.writeFrame(index, targetW, targetH, {
-        palette,
-        delay,
-        transparent: transparentIndex !== -1,
-        transparentIndex: transparentIndex !== -1 ? transparentIndex : 0,
-      });
-
-      const pct = Math.round(((i + 1) / totalFrames) * 100);
-      exportProgressFill.style.width = `${pct}%`;
-      exportPct.textContent = `${pct}%`;
-      exportStatus.textContent = `معالجة الإطار ${i + 1} من ${totalFrames} (${pct}%)`;
+      // إذا تجاوز الحجم 2.800 MB، نحسب نسبة التصغير الدقيقة بناءً على الحجم الفعلي
+      const overflowRatio = SAFE_BYTES_TARGET / finalBytes.length;
+      const scaleDown = Math.min(0.92, Math.max(0.65, Math.sqrt(overflowRatio)));
+      currentW = Math.max(180, Math.floor((currentW * scaleDown) / 2) * 2);
+      if (currentFps > 12 && overflowRatio < 0.75) {
+        currentFps = 12;
+      }
     }
 
     exportStatus.textContent = 'جاري تجميع الملف وتحميله...';
-    gif.finish();
 
     // إنشاء وتنزيل ملف الـ GIF
-    const blob = new Blob([gif.bytes()], { type: 'image/gif' });
+    const blob = new Blob([finalBytes], { type: 'image/gif' });
     const downloadUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = downloadUrl;
@@ -412,7 +506,9 @@ async function exportTransparentGif() {
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(downloadUrl), 5000);
 
-    exportStatus.textContent = '✅ تم التصدير والتحميل بنجاح!';
+    const sizeFormatted = formatBytes(blob.size);
+    const kbFormatted = Math.round(blob.size / 1024).toLocaleString('en-US');
+    exportStatus.textContent = `✅ تم التصدير والتحميل بنجاح! الحجم: ${sizeFormatted} (${kbFormatted} KB) — ضمن الحد الأقصى 2.800 MB`;
   } catch (err) {
     console.error('فشل تصدير GIF:', err);
     exportStatus.textContent = '❌ حدث خطأ أثناء التصدير: ' + err.message;
