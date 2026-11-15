@@ -147,6 +147,7 @@ function updateMp4Stats() {
 }
 
 function loadMp4VideoFile(file) {
+  mp4Video.removeAttribute('crossorigin');
   if (mp4BlobUrl) URL.revokeObjectURL(mp4BlobUrl);
   mp4FileName = file.name.replace(/\.[^/.]+$/, '');
   mp4BlobUrl = URL.createObjectURL(file);
@@ -644,6 +645,7 @@ document.querySelectorAll('.controls-pane .mobile-tabs .tab-btn').forEach((btn) 
 });
 
 function loadChromaVideoFile(file) {
+  chromaVideo.removeAttribute('crossorigin');
   if (chromaState.currentBlobUrl) URL.revokeObjectURL(chromaState.currentBlobUrl);
   chromaState.fileName = file.name.replace(/\.[^/.]+$/, '');
   chromaState.currentBlobUrl = URL.createObjectURL(file);
@@ -868,7 +870,7 @@ async function encodeChromaFramesToGif(targetW, targetH, fps, start, end, onProg
       };
       chromaVideo.addEventListener('seeked', onSeeked);
       chromaVideo.currentTime = frameTime;
-      setTimeout(onSeeked, 400);
+      setTimeout(onSeeked, 600);
     });
 
     chromaEngine.render(chromaVideo, chromaState);

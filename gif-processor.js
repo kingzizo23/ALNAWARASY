@@ -120,6 +120,9 @@ export async function decodeGifToFrames(buffer) {
  * @returns {Promise<Uint8Array>}
  */
 export async function encodeVideoToHighQualityGif(video, options = {}) {
+  // إزالة أي إعدادات CORS على عنصر الفيديو لضمان عدم تلوث الكانفاس (Tainted Canvas) على الهواتف
+  video.removeAttribute('crossorigin');
+
   const {
     start = 0,
     end = video.duration || 5,
@@ -161,7 +164,7 @@ export async function encodeVideoToHighQualityGif(video, options = {}) {
   for (let i = 0; i < totalFrames; i++) {
     const frameTime = start + (i / fps);
 
-    // انتقال دقيق للوقت المطلوب
+    // انتقال دقيق للوقت المطلوب مع مهلة ملائمة لمعالجات الهواتف
     await new Promise((resolve) => {
       let done = false;
       const onSeeked = () => {
@@ -172,13 +175,26 @@ export async function encodeVideoToHighQualityGif(video, options = {}) {
       };
       video.addEventListener('seeked', onSeeked);
       video.currentTime = Math.min(frameTime, end);
-      setTimeout(onSeeked, 400);
+      setTimeout(onSeeked, 600);
     });
 
-    // رسم الإطار من الفيديو مباشرة على الكانفاس بالأبعاد المحددة
-    ctx.drawImage(video, 0, 0, targetW, targetH);
-    const imgData = ctx.getImageData(0, 0, targetW, targetH);
-    const data = imgData.data;
+    let data;
+    try {
+      ctx.drawImage(video, 0, 0, targetW, targetH);
+      const imgData = ctx.getImageData(0, 0, targetW, targetH);
+      data = imgData.data;
+    } catch (err) {
+      if (typeof window !== 'undefined' && window.createImageBitmap) {
+        const bmp = await window.createImageBitmap(video);
+        ctx.clearRect(0, 0, targetW, targetH);
+        ctx.drawImage(bmp, 0, 0, targetW, targetH);
+        if (bmp.close) bmp.close();
+        const imgData = ctx.getImageData(0, 0, targetW, targetH);
+        data = imgData.data;
+      } else {
+        throw err;
+      }
+    }
 
     // GIF عادي بأعلى جودة: استخدام 256 لون لكل إطار (Local Palette) بدون ضغط شفاف
     const palette = quantize(data, 256, { format: 'rgb565' });
