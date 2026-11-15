@@ -3,247 +3,652 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ALNAWARA | إزالة الكروما وتصدير GIF شفاف</title>
+  <title>CR8 GIF | محول وصانع ومحرر GIF الاحترافي</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <!-- النافذة الترحيبية ومعلومات الإدارة (رسالة قابلة للإغلاق) -->
+  <div id="welcomeModal" class="modal-overlay">
+    <div class="modal-card">
+      <button id="closeModalBtn" class="modal-close" type="button" aria-label="إغلاق">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-brand-badge">
+          <span class="badge-dot"></span>
+          <span>CR8 GIF PRO</span>
+        </div>
+        <h2 class="modal-title">مرحباً بكم في CR8 GIF</h2>
+        <p class="modal-greeting">أهلاً و مرحباً بكم في موقعنا المتواضع 👋</p>
+      </div>
+
+      <div class="modal-body">
+        <p class="contact-lead">للتواصل مع الإدارة وطلب المساعدة أو الاستفسارات:</p>
+
+        <div class="contact-cards-grid">
+          <!-- واتساب -->
+          <a href="https://wa.me/201098726806" target="_blank" rel="noopener noreferrer" class="contact-card whatsapp-card">
+            <div class="contact-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.16 8.16 0 0 1-1.25-4.38c0-4.51 3.67-8.18 8.18-8.18 2.19 0 4.24.85 5.78 2.4 1.55 1.55 2.4 3.6 2.4 5.78 0 4.51-3.67 8.18-8.18 8.18zm4.48-6.13c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.87.85-.87 2.08 0 1.23.89 2.42 1.02 2.59.12.17 1.76 2.69 4.26 3.77.6.26 1.06.41 1.42.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.18-.47-.3z"/>
+              </svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-platform">واتساب الإدارة</span>
+              <strong class="contact-value" dir="ltr">+201098726806</strong>
+            </div>
+            <span class="contact-pill">مراسلة الآن</span>
+          </a>
+
+          <!-- تليجرام -->
+          <a href="https://t.me/des4party" target="_blank" rel="noopener noreferrer" class="contact-card telegram-card">
+            <div class="contact-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/>
+              </svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-platform">الانضمام لجروبنا في تليجرام</span>
+              <strong class="contact-value" dir="ltr">@des4party</strong>
+            </div>
+            <span class="contact-pill">انضمام للجروب</span>
+          </a>
+        </div>
+
+        <!-- رعاية الوكالة -->
+        <div class="sponsor-banner">
+          <div class="sponsor-star">✨</div>
+          <div class="sponsor-content">
+            <span class="sponsor-sub">الموقع برعاية وكالة</span>
+            <strong class="sponsor-name">ICE CORE</strong>
+            <span class="sponsor-app">في تطبيق <strong>بارتي ستار</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="enterSiteBtn" class="btn-primary full-w" type="button">
+          دخول إلى موقع CR8 GIF والبدء
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- الشريط العلوي -->
   <header class="topbar">
     <div class="brand">
       <span class="brand-dot"></span>
-      <h1>ALNAWARA</h1>
+      <h1>CR8 GIF</h1>
       <span class="badge">PRO</span>
     </div>
-    <div id="fileInfo" class="file-info hidden">
-      <span id="fileName" class="file-name"></span>
-    </div>
+
+    <!-- أزرار التبديل الرئيسية بين الأقسام -->
+    <nav class="main-sections-nav" id="mainSectionsNav" aria-label="أقسام الموقع">
+      <button class="nav-tab active" data-view="mp4" type="button">
+        <span class="nav-icon">🎬</span>
+        <span class="nav-title">تحويل MP4 (نفس المقاسات)</span>
+      </button>
+
+      <button class="nav-tab" data-view="compress" type="button">
+        <span class="nav-icon">🗜️</span>
+        <span class="nav-title">ضغط ومعالجة GIF (تحديد الميجا)</span>
+      </button>
+
+      <button class="nav-tab" data-view="chroma" type="button">
+        <span class="nav-icon">🟢</span>
+        <span class="nav-title">عزل الكروما (GIF شفاف)</span>
+      </button>
+    </nav>
+
     <div class="topbar-actions">
-      <button id="exportBtn" class="btn-primary" disabled>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        <span>تصدير GIF شفاف</span>
+      <button id="openWelcomeBtn" class="topbar-help-btn" type="button" title="معلومات وتواصل الإدارة">
+        <span class="help-dot"></span>
+        <span>تواصل مع الإدارة</span>
       </button>
     </div>
   </header>
 
-  <!-- مساحة العمل الرئيسية -->
-  <main class="workspace">
-    <!-- منطقة المعاينة والشاشة -->
-    <section class="preview-pane">
-      <div id="dropZone" class="drop-zone">
-        <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" hidden />
-        
-        <div id="emptyState" class="empty-state">
-          <div class="empty-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 10l5-3v10l-5-3"></path>
-              <rect x="2" y="5" width="13" height="14" rx="2"></rect>
+  <!-- مساحة العمل العامة الحاوية للأقسام -->
+  <div class="views-container">
+
+    <!-- ========================================================
+         القسم 1: تحويل MP4 بنفس المقاسات المستوردة إلى GIF عادي بأفضل جودة
+         ======================================================== -->
+    <section id="view-mp4" class="app-view active">
+      <main class="workspace">
+        <!-- منطقة المعاينة والشاشة -->
+        <section class="preview-pane">
+          <div id="mp4DropZone" class="drop-zone">
+            <input type="file" id="mp4FileInput" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" hidden />
+            
+            <div id="mp4EmptyState" class="empty-state">
+              <div class="empty-icon mp4-icon-glow">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+              </div>
+              <p class="empty-title">اسحب فيديو MP4 هنا أو اضغط للاختيار</p>
+              <p class="empty-sub">يتم التحويل <strong>بنفس المقاسات المستوردة بالكامل 100%</strong> وبأعلى جودة ألوان لملف GIF عادي متوافق مع كل المنصات</p>
+              <button id="mp4PickFileBtn" class="btn-secondary" type="button">اختيار فيديو MP4 من الجهاز</button>
+            </div>
+
+            <div id="mp4PlayerWrap" class="canvas-wrap hidden">
+              <video id="mp4Video" playsinline muted loop crossorigin="anonymous"></video>
+              <div class="resolution-badge" id="mp4ResolutionBadge">
+                <span>📐 المقاسات المستوردة الأصلية:</span>
+                <strong id="mp4ResolutionText">0 × 0 بكسل</strong>
+                <span class="res-tag">100% دقة كاملة</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- شريط التحكم في تشغيل الفيديو -->
+          <div id="mp4PlaybackBar" class="playback-bar hidden">
+            <button id="mp4PlayPauseBtn" class="btn-icon" type="button" title="تشغيل / إيقاف">
+              <span id="mp4PlayIcon">⏸</span>
+            </button>
+            <input id="mp4SeekSlider" type="range" min="0" max="100" value="0" step="0.1" />
+            <span id="mp4TimeLabel" class="time-label">00:00 / 00:00</span>
+          </div>
+        </section>
+
+        <!-- لوحة التحكم وإعدادات التصدير -->
+        <aside class="controls-pane">
+          <div class="panel-header">
+            <h2>تحويل MP4 إلى GIF عادي</h2>
+            <p class="panel-desc">أعلى دقة وجودة ألوان 256 مع المحافظة على المقاسات الأصلية</p>
+          </div>
+
+          <!-- بطاقة المقاسات الأصلية -->
+          <div class="size-limit-card highlight-card">
+            <div class="size-limit-header">
+              <div class="size-limit-badge">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+                </svg>
+                <span>مقاسات الفيديو المستورد</span>
+              </div>
+              <strong id="mp4TargetDimsDisplay" class="size-limit-value">-- × --</strong>
+            </div>
+            <p class="size-limit-desc">
+              ✅ الحفظ بنفس المقاسات مفعل: سيتم تصدير الـ GIF بنفس أبعاد الفيديو الأصلية المستوردة لضمان أقصى وضوح ممكن بدون أي بكسلة.
+            </p>
+          </div>
+
+          <!-- خيارات الأبعاد -->
+          <div class="control-group">
+            <label for="mp4ScaleSelect">أبعاد تصدير الـ GIF</label>
+            <select id="mp4ScaleSelect">
+              <option value="1.0" selected>نفس المقاسات المستوردة 100% (أعلى جودة - موصى به)</option>
+              <option value="0.75">75% من المقاس الأصلي (متوازن وسريع)</option>
+              <option value="0.5">50% من المقاس الأصلي (حجم خفيف)</option>
+              <option value="custom">عرض مخصص بالبكسل</option>
+            </select>
+          </div>
+
+          <div id="mp4CustomWidthWrap" class="control-group hidden">
+            <label for="mp4CustomWidthInput">العرض المخصص (بكسل)</label>
+            <input type="number" id="mp4CustomWidthInput" min="64" max="3840" step="2" placeholder="مثال: 720" />
+          </div>
+
+          <!-- معدل الإطارات FPS -->
+          <div class="control-group">
+            <label for="mp4FpsSelect">معدل الإطارات (FPS)</label>
+            <select id="mp4FpsSelect">
+              <option value="20" selected>20 إطار/ثانية (حركة سلسة وجودة فائقة - موصى به)</option>
+              <option value="15">15 إطار/ثانية (سلس ومناسب للمراسلات)</option>
+              <option value="24">24 إطار/ثانية (سينمائي فائق النعومة)</option>
+              <option value="12">12 إطار/ثانية (حجم اقتصادي جداً)</option>
+            </select>
+          </div>
+
+          <!-- قص الفيديو -->
+          <div class="control-group-row">
+            <div class="control-group">
+              <label for="mp4TrimStart">البداية (ثانية)</label>
+              <input id="mp4TrimStart" type="number" min="0" step="0.1" value="0" />
+            </div>
+            <div class="control-group">
+              <label for="mp4TrimEnd">النهاية (ثانية)</label>
+              <input id="mp4TrimEnd" type="number" min="0.2" step="0.1" value="5" />
+            </div>
+          </div>
+
+          <!-- إحصائيات المقطع -->
+          <div class="stat-box">
+            <div class="stat-row">
+              <span>مدة المقطع المحدد:</span>
+              <strong id="mp4DurationText">0.0 ثانية</strong>
+            </div>
+            <div class="stat-row">
+              <span>الإطارات المعالجة:</span>
+              <strong id="mp4FramesText">0 إطار</strong>
+            </div>
+            <div class="stat-row">
+              <span>جودة الألوان:</span>
+              <strong class="color-mode-badge">256 لون لكل إطار (Local Palette)</strong>
+            </div>
+          </div>
+
+          <!-- زر تغيير الفيديو -->
+          <button id="mp4ChangeVideoBtn" class="btn-secondary full-w" type="button">
+            🔄 اختيار فيديو آخر
+          </button>
+
+          <!-- زر التحويل الرئيسي -->
+          <button id="mp4ExportBtn" class="btn-primary full-w" type="button" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
-          </div>
-          <p class="empty-title">اسحب الفيديو هنا أو اضغط للاختيار</p>
-          <p class="empty-sub">يدعم MP4 و WebM و MOV — يفضل مقاطع أقل من 15 ثانية للحصول على أفضل أداء</p>
-          <button id="pickFileBtn" class="btn-secondary" type="button">اختيار فيديو من الجهاز</button>
-        </div>
+            <span>تحويل وتصدير GIF بنفس المقاسات</span>
+          </button>
 
-        <div id="canvasWrap" class="canvas-wrap hidden">
-          <canvas id="glCanvas"></canvas>
-          <video id="sourceVideo" playsinline muted loop crossorigin="anonymous" hidden></video>
-          <div id="eyedropperTip" class="eyedropper-tip hidden">
-            <span>انقر على لون الكروما داخل الفيديو للالتقاط</span>
+          <!-- مؤشر التقدم -->
+          <div id="mp4ProgressWrap" class="progress-wrap hidden">
+            <div class="progress-bar">
+              <div id="mp4ProgressFill" class="progress-fill"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="mp4StatusText">جاري المعالجة بأعلى جودة...</span>
+              <span id="mp4ProgressPct">0%</span>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <!-- شريط التحكم في التشغيل -->
-      <div id="playbackBar" class="playback-bar hidden">
-        <button id="playPauseBtn" class="btn-icon" type="button" title="تشغيل / إيقاف">
-          <span id="playIcon">⏸</span>
-        </button>
-        <input id="seekSlider" type="range" min="0" max="100" value="0" step="0.1" />
-        <span id="timeLabel" class="time-label">00:00 / 00:00</span>
-      </div>
+          <!-- بطاقة اكتمال التحويل -->
+          <div id="mp4SuccessCard" class="success-card hidden">
+            <div class="success-header">
+              <span class="success-icon">✅</span>
+              <strong>تم إنشاء الـ GIF بنجاح!</strong>
+            </div>
+            <p id="mp4SuccessDetails" class="success-details">الحجم: 0 MB | الأبعاد: 0 × 0</p>
+            <a id="mp4DownloadBtn" class="btn-primary full-w" download="CR8_GIF_original.gif">
+              💾 تحميل ملف الـ GIF
+            </a>
+          </div>
+        </aside>
+      </main>
     </section>
 
-    <!-- لوحة التحكم الجانبية -->
-    <aside class="controls-pane">
-      <!-- تبويبات الهاتف -->
-      <nav class="mobile-tabs">
-        <button class="tab-btn active" data-tab="chroma">الكروما</button>
-        <button class="tab-btn" data-tab="trim">القص</button>
-        <button class="tab-btn" data-tab="export">التصدير</button>
-      </nav>
+    <!-- ========================================================
+         القسم 2: ضغط ومعالجة صورة GIF عادية أو شفافة مع تحديد حجم الميجا
+         ======================================================== -->
+    <section id="view-compress" class="app-view">
+      <main class="workspace">
+        <!-- منطقة المعاينة والمقارنة -->
+        <section class="preview-pane">
+          <div id="compressDropZone" class="drop-zone">
+            <input type="file" id="compressFileInput" accept="image/gif" hidden />
+            
+            <div id="compressEmptyState" class="empty-state">
+              <div class="empty-icon compress-icon-glow">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 14h6m0 0v6m0-6L3 21"></path>
+                  <path d="M20 10h-6m0 0V4m0 6l7-7"></path>
+                </svg>
+              </div>
+              <p class="empty-title">اسحب صورة GIF هنا (عادية أو شفافة)</p>
+              <p class="empty-sub">ضغط ومعالجة احترافية مع خيار تحديد <strong>حجم الميجا المطلوب بدقة</strong>، مع الحفاظ الكامل على الشفافية وأفضل جودة بصرية</p>
+              <button id="compressPickFileBtn" class="btn-secondary" type="button">اختيار ملف GIF من الجهاز</button>
+            </div>
 
-      <!-- تبويب 1: الكروما والعزل -->
-      <div class="tab-panel active" id="tab-chroma">
-        <div class="panel-header">
-          <h2>إعدادات العزل (Chroma Key)</h2>
-          <p class="panel-desc">عزل دقيق في فضاء YCbCr اللوني</p>
-        </div>
+            <!-- عرض المعاينة بعد التحميل -->
+            <div id="compressPreviewWrap" class="canvas-wrap compress-views-wrap hidden">
+              <div class="gif-preview-container">
+                <div class="preview-box">
+                  <div class="preview-title-bar">
+                    <span>الصورة الأصلية (قبل الضغط)</span>
+                    <span id="compressOrigSizeBadge" class="size-badge-warn">0 MB</span>
+                  </div>
+                  <div class="preview-img-holder">
+                    <img id="compressOrigImg" alt="GIF الأصلي" />
+                  </div>
+                </div>
 
-        <div class="control-group">
-          <label>لون الكروما المستهدف</label>
-          <div class="color-row">
-            <input type="color" id="keyColor" value="#00ff00" title="اختر اللون يدوياً" />
-            <button class="chip-btn active" data-color="#00ff00" type="button">أخضر</button>
-            <button class="chip-btn" data-color="#0044ff" type="button">أزرق</button>
-            <button id="eyedropperBtn" class="chip-btn chip-action" type="button">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2l4 4L7 17H3v-4L14 2z"></path>
-                <path d="M3 21h18"></path>
-              </svg>
-              <span>قطارة من الفيديو</span>
+                <div id="compressResultBox" class="preview-box hidden">
+                  <div class="preview-title-bar">
+                    <span>النتيجة بعد الضغط والتعديل</span>
+                    <span id="compressNewSizeBadge" class="size-badge-safe">0 MB</span>
+                  </div>
+                  <div class="preview-img-holder">
+                    <img id="compressResultImg" alt="GIF المضغوط" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- لوحة التحكم وتحديد الحجم بالميجابايت -->
+        <aside class="controls-pane">
+          <div class="panel-header">
+            <h2>ضغط ومعالجة الـ GIF</h2>
+            <p class="panel-desc">حدد حجم الميجا المطلوب وسيتولى المحرك ضغط الصورة بأعلى جودة</p>
+          </div>
+
+          <!-- تفاصيل الـ GIF المستورد -->
+          <div class="stat-box">
+            <div class="stat-row">
+              <span>اسم الملف:</span>
+              <strong id="compressFileName" class="text-truncate">--</strong>
+            </div>
+            <div class="stat-row">
+              <span>الحجم الحالي:</span>
+              <strong id="compressSourceSize" class="size-status-warning">0 MB</strong>
+            </div>
+            <div class="stat-row">
+              <span>الأبعاد والإطارات:</span>
+              <strong id="compressSourceMeta">0 × 0 (0 إطار)</strong>
+            </div>
+            <div class="stat-row">
+              <span>نوع الـ GIF:</span>
+              <strong id="compressTransparencyBadge" class="transparency-pill">غير محدد</strong>
+            </div>
+          </div>
+
+          <!-- قسم تحديد حجم الميجا المطلوب -->
+          <div class="target-mb-box">
+            <div class="target-mb-label-row">
+              <label for="targetMbInput">🎯 الحجم المطلوب بالميجابايت (MB)</label>
+              <span id="targetMbValueLabel" class="target-mb-tag">2.0 MB</span>
+            </div>
+            
+            <div class="input-with-unit">
+              <input type="number" id="targetMbInput" step="0.1" min="0.1" max="50" value="2.0" />
+              <span class="unit-text">ميجابايت (MB)</span>
+            </div>
+
+            <!-- أزرار سريعة للأحجام الشائعة -->
+            <div class="presets-row">
+              <button class="mb-preset-btn" data-mb="0.5" type="button">0.5 MB</button>
+              <button class="mb-preset-btn" data-mb="1.0" type="button">1.0 MB</button>
+              <button class="mb-preset-btn" data-mb="1.5" type="button">1.5 MB</button>
+              <button class="mb-preset-btn active" data-mb="2.0" type="button">2.0 MB</button>
+              <button class="mb-preset-btn" data-mb="2.8" type="button" title="حد بارتي ستار وواتساب">2.8 MB ⭐</button>
+              <button class="mb-preset-btn" data-mb="4.0" type="button">4.0 MB</button>
+            </div>
+          </div>
+
+          <!-- معلومات خوارزمية الجودة الذكية -->
+          <div class="info-note-card">
+            <p>
+              💡 <strong>الضغط الذكي التكيفي:</strong> يقوم المحرك بضبط درجات تكميم الألوان ومعدل التكرار مع الحفاظ التام على الشفافية ودقة التفاصيل، لضمان أن يكون الحجم النهائي <strong>أصغر من أو يساوي</strong> القيمة المحددة.
+            </p>
+          </div>
+
+          <!-- زر تغيير ملف الـ GIF -->
+          <button id="compressChangeBtn" class="btn-secondary full-w" type="button">
+            🔄 اختيار GIF آخر
+          </button>
+
+          <!-- زر بدء الضغط -->
+          <button id="compressStartBtn" class="btn-primary full-w" type="button" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 14 10 14 10 20"></polyline>
+              <polyline points="20 10 14 10 14 4"></polyline>
+              <line x1="14" y1="10" x2="21" y2="3"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+            <span>بدء ضغط ومعالجة الـ GIF الآن</span>
+          </button>
+
+          <!-- مؤشر تقدم الضغط -->
+          <div id="compressProgressWrap" class="progress-wrap hidden">
+            <div class="progress-bar">
+              <div id="compressProgressFill" class="progress-fill"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="compressStatusText">جاري فك تشفير وضغط الإطارات...</span>
+              <span id="compressProgressPct">0%</span>
+            </div>
+          </div>
+
+          <!-- بطاقة اكتمال الضغط -->
+          <div id="compressSuccessCard" class="success-card hidden">
+            <div class="success-header">
+              <span class="success-icon">🎉</span>
+              <strong>تم ضغط ومعالجة الـ GIF بنجاح!</strong>
+            </div>
+            <div class="savings-row">
+              <div class="saving-item">
+                <span>الحجم قبل:</span>
+                <strong id="compressOldSize">0 MB</strong>
+              </div>
+              <div class="saving-arrow">➔</div>
+              <div class="saving-item">
+                <span>الحجم بعد:</span>
+                <strong id="compressNewSize" class="text-safe">0 MB</strong>
+              </div>
+            </div>
+            <div class="saving-badge" id="compressSavingPct">تم توفير 0% من الحجم</div>
+            <a id="compressDownloadBtn" class="btn-primary full-w" download="CR8_GIF_compressed.gif">
+              💾 تحميل الـ GIF المضغوط الآن
+            </a>
+          </div>
+        </aside>
+      </main>
+    </section>
+
+    <!-- ========================================================
+         القسم 3: عزل الكروما وتصدير GIF شفاف (الأداة الاحترافية الحالية)
+         ======================================================== -->
+    <section id="view-chroma" class="app-view">
+      <main class="workspace">
+        <!-- منطقة المعاينة والشاشة -->
+        <section class="preview-pane">
+          <div id="dropZone" class="drop-zone">
+            <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" hidden />
+            
+            <div id="emptyState" class="empty-state">
+              <div class="empty-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 10l5-3v10l-5-3"></path>
+                  <rect x="2" y="5" width="13" height="14" rx="2"></rect>
+                </svg>
+              </div>
+              <p class="empty-title">اسحب فيديو الكروما هنا أو اضغط للاختيار</p>
+              <p class="empty-sub">عزل فوري للكروما الخضراء أو الزرقاء عبر WebGL وتصدير GIF شفاف بالكامل</p>
+              <button id="pickFileBtn" class="btn-secondary" type="button">اختيار فيديو كروما من الجهاز</button>
+            </div>
+
+            <div id="canvasWrap" class="canvas-wrap hidden">
+              <canvas id="glCanvas"></canvas>
+              <video id="sourceVideo" playsinline muted loop crossorigin="anonymous" hidden></video>
+              <div id="eyedropperTip" class="eyedropper-tip hidden">
+                <span>انقر على لون الكروما داخل الفيديو للالتقاط</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- شريط التحكم في التشغيل -->
+          <div id="playbackBar" class="playback-bar hidden">
+            <button id="playPauseBtn" class="btn-icon" type="button" title="تشغيل / إيقاف">
+              <span id="playIcon">⏸</span>
+            </button>
+            <input id="seekSlider" type="range" min="0" max="100" value="0" step="0.1" />
+            <span id="timeLabel" class="time-label">00:00 / 00:00</span>
+          </div>
+        </section>
+
+        <!-- لوحة التحكم الجانبية للكروما -->
+        <aside class="controls-pane">
+          <!-- تبويبات الهاتف -->
+          <nav class="mobile-tabs">
+            <button class="tab-btn active" data-tab="chroma">الكروما</button>
+            <button class="tab-btn" data-tab="trim">القص</button>
+            <button class="tab-btn" data-tab="export">التصدير</button>
+          </nav>
+
+          <!-- تبويب 1: الكروما والعزل -->
+          <div class="tab-panel active" id="tab-chroma">
+            <div class="panel-header">
+              <h2>إعدادات العزل (Chroma Key)</h2>
+              <p class="panel-desc">عزل دقيق في فضاء YCbCr اللوني</p>
+            </div>
+
+            <div class="control-group">
+              <label>لون الكروما المستهدف</label>
+              <div class="color-row">
+                <input type="color" id="keyColor" value="#00ff00" title="اختر اللون يدوياً" />
+                <button class="chip-btn active" data-color="#00ff00" type="button">أخضر</button>
+                <button class="chip-btn" data-color="#0044ff" type="button">أزرق</button>
+                <button id="eyedropperBtn" class="chip-btn chip-action" type="button">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2l4 4L7 17H3v-4L14 2z"></path>
+                    <path d="M3 21h18"></path>
+                  </svg>
+                  <span>قطارة من الفيديو</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="label-row">
+                <label for="similarity">حساسية العزل (Similarity)</label>
+                <span id="similarityVal" class="value-tag">0.35</span>
+              </div>
+              <input id="similarity" type="range" min="0.05" max="0.75" step="0.01" value="0.35" />
+              <span class="field-hint">كلما زادت القيمة زاد نطاق الألوان المعزولة</span>
+            </div>
+
+            <div class="control-group">
+              <div class="label-row">
+                <label for="smoothness">نعومة الحواف (Smoothness)</label>
+                <span id="smoothnessVal" class="value-tag">0.10</span>
+              </div>
+              <input id="smoothness" type="range" min="0.01" max="0.40" step="0.01" value="0.10" />
+              <span class="field-hint">تنعيم حواف المجسم وتقليل التعرج</span>
+            </div>
+
+            <div class="control-group">
+              <div class="label-row">
+                <label for="spill">إزالة الانعكاس الأخضر (Spill)</label>
+                <span id="spillVal" class="value-tag">0.20</span>
+              </div>
+              <input id="spill" type="range" min="0.00" max="1.00" step="0.02" value="0.20" />
+              <span class="field-hint">إزالة هالة اللون المنعكسة على الشعر والأطراف</span>
+            </div>
+          </div>
+
+          <!-- تبويب 2: القص وتحديد المقطع -->
+          <div class="tab-panel" id="tab-trim">
+            <div class="panel-header">
+              <h2>قص المقطع (Trim Video)</h2>
+              <p class="panel-desc">حدد الجزء المراد تحويله إلى GIF</p>
+            </div>
+
+            <div class="control-group">
+              <label for="trimStart">بداية المقطع (ثوانٍ)</label>
+              <input id="trimStart" type="number" min="0" step="0.1" value="0" />
+            </div>
+
+            <div class="control-group">
+              <label for="trimEnd">نهاية المقطع (ثوانٍ)</label>
+              <input id="trimEnd" type="number" min="0.5" step="0.1" value="5" />
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-row">
+                <span>مدة المقطع المحدد:</span>
+                <strong id="selectedDuration">0.0 ثانية</strong>
+              </div>
+              <div class="stat-row">
+                <span>إجمالي الإطارات المتوقعة:</span>
+                <strong id="estimatedFrames">0 إطار</strong>
+              </div>
+              <div class="stat-row">
+                <span>الحد الأقصى للتصدير:</span>
+                <strong class="limit-value">2.800 MB (2,800 KB)</strong>
+              </div>
+              <div class="stat-row">
+                <span>الحجم التقديري المتوقع:</span>
+                <strong id="trimEstimatedSize" class="size-status-safe">~0.0 MB</strong>
+              </div>
+            </div>
+
+            <div id="memoryWarning" class="warning-banner hidden">
+              ⚠️ تنبيه: تجاوزت مدة المقطع 15 ثانية، قد يتطلب التصدير وقتاً أطول واستهلاكاً لذاكرة الجهاز.
+            </div>
+
+            <button id="changeVideoBtn" class="btn-secondary full-w" type="button">
+              🔄 تغيير الفيديو الحالي
             </button>
           </div>
-        </div>
 
-        <div class="control-group">
-          <div class="label-row">
-            <label for="similarity">حساسية العزل (Similarity)</label>
-            <span id="similarityVal" class="value-tag">0.35</span>
-          </div>
-          <input id="similarity" type="range" min="0.05" max="0.75" step="0.01" value="0.35" />
-          <span class="field-hint">كلما زادت القيمة زاد نطاق الألوان المعزولة</span>
-        </div>
-
-        <div class="control-group">
-          <div class="label-row">
-            <label for="smoothness">نعومة الحواف (Smoothness)</label>
-            <span id="smoothnessVal" class="value-tag">0.10</span>
-          </div>
-          <input id="smoothness" type="range" min="0.01" max="0.40" step="0.01" value="0.10" />
-          <span class="field-hint">تنعيم حواف المجسم وتقليل التعرج</span>
-        </div>
-
-        <div class="control-group">
-          <div class="label-row">
-            <label for="spill">إزالة الانعكاس الأخضر (Spill)</label>
-            <span id="spillVal" class="value-tag">0.20</span>
-          </div>
-          <input id="spill" type="range" min="0.00" max="1.00" step="0.02" value="0.20" />
-          <span class="field-hint">إزالة هالة اللون المنعكسة على الشعر والأطراف</span>
-        </div>
-      </div>
-
-      <!-- تبويب 2: القص وتحديد المقطع -->
-      <div class="tab-panel" id="tab-trim">
-        <div class="panel-header">
-          <h2>قص المقطع (Trim Video)</h2>
-          <p class="panel-desc">حدد الجزء المراد تحويله إلى GIF</p>
-        </div>
-
-        <div class="control-group">
-          <label for="trimStart">بداية المقطع (ثوانٍ)</label>
-          <input id="trimStart" type="number" min="0" step="0.1" value="0" />
-        </div>
-
-        <div class="control-group">
-          <label for="trimEnd">نهاية المقطع (ثوانٍ)</label>
-          <input id="trimEnd" type="number" min="0.5" step="0.1" value="5" />
-        </div>
-
-        <div class="stat-box">
-          <div class="stat-row">
-            <span>مدة المقطع المحدد:</span>
-            <strong id="selectedDuration">0.0 ثانية</strong>
-          </div>
-          <div class="stat-row">
-            <span>إجمالي الإطارات المتوقعة:</span>
-            <strong id="estimatedFrames">0 إطار</strong>
-          </div>
-          <div class="stat-row">
-            <span>الحد الأقصى للتصدير:</span>
-            <strong class="limit-value">2.800 MB (2,800 KB)</strong>
-          </div>
-          <div class="stat-row">
-            <span>الحجم التقديري المتوقع:</span>
-            <strong id="trimEstimatedSize" class="size-status-safe">~0.0 MB</strong>
-          </div>
-        </div>
-
-        <div id="memoryWarning" class="warning-banner hidden">
-          ⚠️ تنبيه: تجاوزت مدة المقطع 15 ثانية، قد يتطلب التصدير وقتاً أطول واستهلاكاً كبيراً لذاكرة الجهاز.
-        </div>
-
-        <button id="changeVideoBtn" class="btn-secondary full-w" type="button">
-          🔄 تغيير الفيديو الحالي
-        </button>
-      </div>
-
-      <!-- تبويب 3: التصدير والإعدادات -->
-      <div class="tab-panel" id="tab-export">
-        <div class="panel-header">
-          <h2>إعدادات التصدير</h2>
-          <p class="panel-desc">توليد ملف GIF شفاف متوافق مع المراسلات والويب</p>
-        </div>
-
-        <!-- بطاقة الالتزام بالحد الأقصى للحجم (2.800 ميجابايت) -->
-        <div class="size-limit-card">
-          <div class="size-limit-header">
-            <div class="size-limit-badge">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              <span>الحد الأقصى لحجم التصدير</span>
+          <!-- تبويب 3: التصدير والإعدادات -->
+          <div class="tab-panel" id="tab-export">
+            <div class="panel-header">
+              <h2>إعدادات تصدير GIF شفاف</h2>
+              <p class="panel-desc">توليد ملف GIF شفاف متوافق مع المراسلات وتطبيقات البث</p>
             </div>
-            <strong class="size-limit-value">2.800 MB (2,800 KB)</strong>
+
+            <div class="size-limit-card">
+              <div class="size-limit-header">
+                <div class="size-limit-badge">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  <span>الحد الأقصى لحجم التصدير</span>
+                </div>
+                <strong class="size-limit-value">2.800 MB (2,800 KB)</strong>
+              </div>
+              <p class="size-limit-desc">
+                🔒 قفل الحجم مفعل: نضمن لك عدم تخطي حجم الـ GIF النهائي 2.800 ميجابايت (2,800 كيلوبايت) أبداً، مع الحفاظ على أعلى دقة ممكنة.
+              </p>
+              <div class="stat-row">
+                <span>الحجم التقديري الحالي:</span>
+                <strong id="exportEstimatedSize" class="size-status-safe">~0.0 MB</strong>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label for="exportWidth">عرض الـ GIF (العرض بكسل)</label>
+              <select id="exportWidth">
+                <option value="320">320 بكسل (حجم خفيف جداً للهاتف)</option>
+                <option value="480" selected>480 بكسل (متوازن وموصى به)</option>
+                <option value="720">720 بكسل (جودة عالية HD)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label for="exportFps">معدل الإطارات (FPS)</label>
+              <select id="exportFps">
+                <option value="12">12 إطار/ثانية (حجم أصغر، تحميل أسرع)</option>
+                <option value="15" selected>15 إطار/ثانية (سلس ومتوازن)</option>
+                <option value="24">24 إطار/ثانية (حركة فائقة النعومة)</option>
+              </select>
+            </div>
+
+            <button id="exportBtn" class="btn-primary full-w" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>تصدير وتحميل GIF شفاف</span>
+            </button>
+
+            <!-- مؤشر تقدم التصدير -->
+            <div id="exportProgressWrap" class="progress-wrap hidden">
+              <div class="progress-bar">
+                <div id="exportProgressFill" class="progress-fill"></div>
+              </div>
+              <div class="progress-meta">
+                <span id="exportStatus">جاري تجهيز الإطارات...</span>
+                <span id="exportPct">0%</span>
+              </div>
+            </div>
           </div>
-          <p class="size-limit-desc">
-            🔒 قفل الحجم مفعل: نضمن لك عدم تخطي حجم الـ GIF النهائي 2.800 ميجابايت (2,800 كيلوبايت) أبداً، مع الحفاظ على أعلى دقة ممكنة.
-          </p>
-          <div class="stat-row">
-            <span>الحجم التقديري الحالي:</span>
-            <strong id="exportEstimatedSize" class="size-status-safe">~0.0 MB</strong>
-          </div>
-        </div>
+        </aside>
+      </main>
+    </section>
 
-        <div class="control-group">
-          <label for="exportWidth">عرض الـ GIF (العرض بكسل)</label>
-          <select id="exportWidth">
-            <option value="320">320 بكسل (حجم خفيف جداً للهاتف)</option>
-            <option value="480" selected>480 بكسل (متوازن وموصى به)</option>
-            <option value="720">720 بكسل (جودة عالية HD)</option>
-          </select>
-        </div>
-
-        <div class="control-group">
-          <label for="exportFps">معدل الإطارات (FPS)</label>
-          <select id="exportFps">
-            <option value="12">12 إطار/ثانية (حجم أصغر، تحميل أسرع)</option>
-            <option value="15" selected>15 إطار/ثانية (سلس ومتوازن)</option>
-            <option value="24">24 إطار/ثانية (حركة فائقة النعومة)</option>
-          </select>
-        </div>
-
-        <!-- تنبيه دقة الهاتف -->
-        <div id="mobileResWarning" class="warning-banner hidden">
-          📱 نصيحة: للأجهزة المحمولة يفضل اختيار 480 بكسل أو أقل لسرعة التصدير وتجنب نفاد الذاكرة.
-        </div>
-
-        <!-- زر التصدير الإضافي للهاتف -->
-        <button id="mobileExportBtn" class="btn-primary full-w mobile-only-btn" disabled>
-          تصدير وتحميل GIF شفاف
-        </button>
-
-        <!-- مؤشر تقدم التصدير -->
-        <div id="exportProgressWrap" class="progress-wrap hidden">
-          <div class="progress-bar">
-            <div id="exportProgressFill" class="progress-fill"></div>
-          </div>
-          <div class="progress-meta">
-            <span id="exportStatus">جاري تجهيز الإطارات...</span>
-            <span id="exportPct">0%</span>
-          </div>
-        </div>
-      </div>
-    </aside>
-  </main>
+  </div>
 
   <script type="module" src="main.js"></script>
 </body>
